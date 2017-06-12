@@ -62,7 +62,7 @@ public class AirTouchService extends Service
         final int           anHour        = 60*60* 1000; // 10秒
         int tempHour;
         if(dayFlag){
-            tempHour = anHour* 12;
+            tempHour = anHour* 11;
             dayFlag = false;
         }
         else{
