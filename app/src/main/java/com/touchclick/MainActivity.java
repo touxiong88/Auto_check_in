@@ -3,9 +3,13 @@ package com.touchclick;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
+    Button btnStart, btnStop;
 
     static{
 
@@ -22,16 +26,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
         //tv.setText(AirTouchJNI.mainFromJNI());
-
-        Intent intent = new Intent(this, AirTouchService.class);
-        startService(intent);
-
+        init();
     }
+
+    public void init(){
+        btnStart = (Button)findViewById(R.id.start);
+        btnStart.setOnClickListener(mClickListener);
+
+        btnStop = (Button)findViewById(R.id.stop);
+        btnStop.setOnClickListener(mClickListener);
+    }
+    View.OnClickListener mClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
+            // TODO Auto-generated method stub
+            Intent intent = new Intent(MainActivity.this, AirTouchService.class);
+
+            int id = arg0.getId();
+            switch (id) {
+                case R.id.start:
+                    startService(intent);
+                    break;
+                case R.id.stop:
+                    stopService(intent);
+                    break;
+
+            }
+        }
+    };
+
 
 
 }

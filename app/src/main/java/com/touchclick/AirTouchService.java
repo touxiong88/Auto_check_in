@@ -14,14 +14,14 @@ import java.util.Date;
 public class AirTouchService extends Service
 {
     private static final String TAG = "AirTouchService";
-    static boolean dayFlag = true;
+    static boolean firsrRun = true;
     static{
 
         try {
             System.loadLibrary("airTouch");
         }
         catch (UnsatisfiedLinkError ule) {
-            System.err.println("WARNING: Could not load lib3djni.so");
+            System.err.println("WARNING: Could not load airTouch.so");
             ule.printStackTrace();
         }
     }
@@ -59,15 +59,15 @@ public class AirTouchService extends Service
         }).start();
 
         AlarmManager  manager       = (AlarmManager) getSystemService(ALARM_SERVICE);
-        final int           anHour        = 60*60* 1000; // 10秒
+        final int           anHour        = 30*60* 1000; // one hour
         int tempHour;
-        if(dayFlag){
-            tempHour = anHour* 11;
-            dayFlag = false;
+        if(firsrRun){
+            tempHour = anHour* 7;
+            firsrRun = false;
         }
         else{
-            tempHour = anHour* 12;
-            dayFlag = true;
+            tempHour = anHour* 24;
+            firsrRun = true;
         }
 
         long          triggerAtTime = SystemClock.elapsedRealtime() + tempHour;
