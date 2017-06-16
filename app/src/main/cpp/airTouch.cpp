@@ -30,18 +30,12 @@ struct packets
 
 
 extern "C" {
-JNIEXPORT jstring JNICALL
-Java_com_touchclick_AirTouchJNI_clickFromJNI(
-        JNIEnv *env,
-        jobject /* this */) {
-    char hello[100] = {"fd "};
 
-    int ret;
+
+
+void initCoord() {
     int coordX = 550;
     int coordY = 1700;
-
-    LOGFI("jni in");
-
     pAriTouch.start_h = 0xff;
     pAriTouch.start_l = 0xff;
     pAriTouch.y_h = (coordY) >> 8;
@@ -51,7 +45,66 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
     pAriTouch.press = 0x55;
     pAriTouch.end_h = 0xfe;
     pAriTouch.end_l = 0xfe;
+}
+void setCoord(int coordX, int coordY) {
 
+    pAriTouch.y_h = (coordY) >> 8;
+    pAriTouch.y_l = coordY & 0xFF;
+    pAriTouch.x_h = coordX >> 8;
+    pAriTouch.x_l = coordX & 0xFF;
+    pAriTouch.press = 0x55;
+
+}
+
+int ioctlClick() {
+    int fd_gesture, ret;
+    fd_gesture = open("/dev/gesture", O_RDWR); /*open device*/ //修改设备名为 gesture
+    if (fd_gesture == -1) {
+        printf("open device fd error!\n");
+        return 0;
+    }
+
+    ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
+    pAriTouch.press = 0x80;
+    ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
+
+    close(fd_gesture);
+
+    LOGFI("fd %d ret %d",fd_gesture,ret);
+    return ret;
+}
+JNIEXPORT jstring JNICALL
+Java_com_touchclick_AirTouchJNI_clickFromJNI(
+        JNIEnv *env,
+        jobject /* this */) {
+
+    int ret;
+    LOGFI("jni in");
+
+    initCoord();
+
+    setCoord(550,1700);//移动打卡 产生浮窗
+    ret = ioctlClick();
+    sleep(5);
+
+    setCoord(845,600);//todo 关闭加班浮窗 坐标未知
+    ret += ioctlClick();
+
+    if (ret < 0)
+        return env->NewStringUTF("finish");
+    else
+        return env->NewStringUTF("finish");
+
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_touchclick_AirTouchJNI_mainFromJNI(
+        JNIEnv *env,
+        jobject /* this */) {
+    char hello[100] = {"fd "};
+    int ret;
+    initCoord();
+    LOGFI("jni in");
 
     int fd_gesture;
     fd_gesture = open("/dev/gesture", O_RDWR); /*open device*/ //修改设备名为 gesture
@@ -65,69 +118,6 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
 
     close(fd_gesture);
 
-    char temp[64];
-
-    sprintf(temp, "%d", fd_gesture);
-    strcat(hello, temp);
-
-    strcat(hello, "  ret ");
-    sprintf(temp, "%d", ret);
-    strcat(hello, temp);
-
-    LOGFI("fd %d ret %d",fd_gesture,ret);
-
-    if (ret < 0)
-        return env->NewStringUTF(hello);
-    else
-        return env->NewStringUTF(hello);
-
-}
-
-JNIEXPORT jstring JNICALL
-Java_com_touchclick_AirTouchJNI_mainFromJNI(
-        JNIEnv *env,
-        jobject /* this */) {
-    char hello[100] = {"fd "};
-
-    int ret;
-    int coordX = 550;
-    int coordY = 1700;
-
-    LOGFI("jni in");
-
-    pAriTouch.start_h = 0xff;
-    pAriTouch.start_l = 0xff;
-    pAriTouch.y_h = (coordY) >> 8;
-    pAriTouch.y_l = coordY & 0xFF;
-    pAriTouch.x_h = coordX >> 8;
-    pAriTouch.x_l = coordX & 0xFF;
-    pAriTouch.press = 0x55;//down
-    pAriTouch.end_h = 0xfe;
-    pAriTouch.end_l = 0xfe;
-
-
-    int fd_gesture;
-    fd_gesture = open("/dev/gesture", O_RDWR); /*open device*/ //修改设备名为 gesture
-    if (fd_gesture == -1) {
-        printf("open device fd error!\n");
-        return 0;
-    }
-    //ret = ioctl(fd_gesture, CURSOR_GET_DATA, &pAriTouch);
-    //sleep(10);
-    ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
-    //usleep(1000);
-    pAriTouch.press = 0x80;//up
-    ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
-    //usleep(1000);
-
-    pAriTouch.press = 0x55;//down
-    ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
-    //sleep(2);
-    pAriTouch.press = 0x80;//up
-    ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
-    //usleep(1000);
-
-    close(fd_gesture);
 
     char temp[64];
 

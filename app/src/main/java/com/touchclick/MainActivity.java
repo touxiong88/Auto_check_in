@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,9 +52,13 @@ public class MainActivity extends AppCompatActivity {
             switch (id) {
                 case R.id.start:
                     startService(intent);
+                    Toast.makeText(MainActivity.this, "startService", Toast.LENGTH_LONG)
+                         .show();
                     break;
                 case R.id.stop:
                     stopService(intent);
+                    Toast.makeText(MainActivity.this, "stopService", Toast.LENGTH_LONG)
+                         .show();
                     break;
 
             }
