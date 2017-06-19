@@ -3,8 +3,8 @@ package com.touchclick;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -14,7 +14,7 @@ import java.util.Date;
 public class AirTouchService extends Service
 {
     private static final String TAG = "AirTouchService";
-        static boolean firsrRun = true;
+        static boolean firsrRun = false;
         static{
 
             try {
@@ -55,11 +55,11 @@ public class AirTouchService extends Service
     final int           anHour        = 60*60* 1000; // one hour
     int tempHour;
     if(firsrRun){
-        tempHour = anHour*5;
-        firsrRun = false;
+        tempHour = anHour*12;
+//        firsrRun = false;
     }
     else{
-        tempHour = anHour*12;
+        tempHour = anHour*11;
         firsrRun = true;
     }
 
@@ -83,9 +83,9 @@ public class AirTouchService extends Service
             intent.setComponent(cn);
             getApplicationContext().startActivity(intent);*/
 
-            PackageManager packageManager = getApplicationContext().getPackageManager();
+/*            PackageManager packageManager = getApplicationContext().getPackageManager();
             Intent         intent         = packageManager.getLaunchIntentForPackage("com.dayhr");
-            getApplicationContext().startActivity(intent);
+            getApplicationContext().startActivity(intent);*/
             //                ((AirTouchService) mContext).finish();
             android.util.Log.v(TAG, "launcher Dayhr success");
         } catch (Exception e) {
@@ -98,11 +98,18 @@ public class AirTouchService extends Service
     @Override
     public void onDestroy() {
         super.onDestroy();
+        CancelAlarm(this);
         Log.d(TAG, "onDestroy");
     }
 
 
-
+    public void CancelAlarm(Context context)
+    {
+        Intent i = new Intent(context, AlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pi);
+    }
 
 
 }

@@ -30,7 +30,7 @@ struct packets
 
 
 extern "C" {
-
+int x,y;
 
 
 void initCoord() {
@@ -47,7 +47,8 @@ void initCoord() {
     pAriTouch.end_l = 0xfe;
 }
 void setCoord(int coordX, int coordY) {
-
+    x = coordX;
+    y = coordY;
     pAriTouch.y_h = (coordY) >> 8;
     pAriTouch.y_l = coordY & 0xFF;
     pAriTouch.x_h = coordX >> 8;
@@ -63,7 +64,7 @@ int ioctlClick() {
         printf("open device fd error!\n");
         return 0;
     }
-
+    LOGFI("click x %d y %d",x,y);
     ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
     pAriTouch.press = 0x80;
     ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
@@ -83,12 +84,14 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
 
     initCoord();
 
-    setCoord(550,1700);//移动打卡 产生浮窗
+    setCoord(550,1700);//移动打卡 将产生浮窗
     ret = ioctlClick();
-    sleep(5);
+    sleep(10);
 
-    setCoord(845,600);//todo 关闭加班浮窗 坐标未知
+    setCoord(1080-825,445);//todo 关闭加班浮窗 坐标未知
+    setCoord(1080-825,580);//todo 关闭加班浮窗 坐标未知
     ret += ioctlClick();
+    sleep(5);
 
     if (ret < 0)
         return env->NewStringUTF("finish");

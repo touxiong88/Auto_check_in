@@ -52,12 +52,12 @@ public class MainActivity extends AppCompatActivity {
             switch (id) {
                 case R.id.start:
                     startService(intent);
-                    Toast.makeText(MainActivity.this, "startService", Toast.LENGTH_LONG)
+                    Toast.makeText(MainActivity.this, "startService", Toast.LENGTH_SHORT)
                          .show();
                     break;
                 case R.id.stop:
                     stopService(intent);
-                    Toast.makeText(MainActivity.this, "stopService", Toast.LENGTH_LONG)
+                    Toast.makeText(MainActivity.this, "stopService", Toast.LENGTH_SHORT)
                          .show();
                     break;
 

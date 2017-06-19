@@ -25,7 +25,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         //com.dayhr:pushservice com.dayhr/.home.activity.MainActivity
         //startDayhrActivity();
         try {
-            sleep(1000);//1秒
+            sleep(1);//1豪秒
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
