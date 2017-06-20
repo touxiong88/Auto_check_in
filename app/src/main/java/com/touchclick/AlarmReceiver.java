@@ -19,9 +19,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         long             time   =System.currentTimeMillis();
         Date             date   =new Date(time);
-        SimpleDateFormat format =new SimpleDateFormat("EEEE");
-
-        Log.d(TAG, format.format(date));
+        SimpleDateFormat weekFormat =new SimpleDateFormat("EEEE");
+        SimpleDateFormat hourFormat =new SimpleDateFormat("hh");
+        Log.d(TAG, weekFormat.format(date));
+        Log.d(TAG, hourFormat.format(date));
         //com.dayhr:pushservice com.dayhr/.home.activity.MainActivity
         //startDayhrActivity();
         try {
@@ -29,7 +30,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(!("星期天".equals(format.format(date))))AirTouchJNI.clickFromJNI();
+        if(!("星期天".equals(weekFormat.format(date))))
+            if(("08".equals(hourFormat.format(date))))
+                AirTouchJNI.clickFromJNI();
+
         Log.d(TAG,"CHECK IN");
         Intent i = new Intent(context, AirTouchService.class);
         context.startService(i);

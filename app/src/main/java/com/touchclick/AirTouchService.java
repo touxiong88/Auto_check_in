@@ -14,7 +14,7 @@ import java.util.Date;
 public class AirTouchService extends Service
 {
     private static final String TAG = "AirTouchService";
-        static boolean firsrRun = false;
+        static boolean firsrRun = true;
         static{
 
             try {
@@ -52,18 +52,9 @@ public class AirTouchService extends Service
         }).start();
 
     AlarmManager  manager       = (AlarmManager) getSystemService(ALARM_SERVICE);
-    final int           anHour        = 60*60* 1000; // one hour
-    int tempHour;
-    if(firsrRun){
-        tempHour = anHour*12;
-//        firsrRun = false;
-    }
-    else{
-        tempHour = anHour*11;
-        firsrRun = true;
-    }
+    final int           halfHour        = 60*60* 1000; // one hour
 
-    long          triggerAtTime = SystemClock.elapsedRealtime() + tempHour;
+    long          triggerAtTime = SystemClock.elapsedRealtime() + halfHour;
     Intent        i             = new Intent(this, AlarmReceiver.class);
     PendingIntent pi            = PendingIntent.getBroadcast(this, 0, i, 0);
     manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
