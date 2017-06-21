@@ -31,7 +31,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             e.printStackTrace();
         }
         if(!("星期天".equals(weekFormat.format(date))))
-            if(("08".equals(hourFormat.format(date))))
+            if(("02".equals(hourFormat.format(date))))
                 AirTouchJNI.clickFromJNI();
 
         Log.d(TAG,"CHECK IN");
