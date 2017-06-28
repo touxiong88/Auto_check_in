@@ -89,6 +89,7 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
     sleep(10);
 
     setCoord(1080-825,445);//todo 关闭加班浮窗 坐标未知
+    ret += ioctlClick();
     setCoord(1080-825,580);//todo 关闭加班浮窗 坐标未知
     ret += ioctlClick();
     sleep(5);
