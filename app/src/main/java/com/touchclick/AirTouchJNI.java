@@ -15,4 +15,5 @@ public class AirTouchJNI
 //    com.touchclick.AirTouchJNI.mainFromJNI
     public native static String mainFromJNI();
     public native static String clickFromJNI();
+    public native static String stayWackupFromJNI();
 }

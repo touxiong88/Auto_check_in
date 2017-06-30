@@ -30,9 +30,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(!("星期天".equals(weekFormat.format(date))))
+        AirTouchJNI.stayWackupFromJNI();//保持屏幕常亮
+        if(!("星期天".equals(weekFormat.format(date)))){
             if(("08".equals(hourFormat.format(date))))
-                AirTouchJNI.clickFromJNI();
+                AirTouchJNI.clickFromJNI();}
+
+
 
         Log.d(TAG,"CHECK IN");
         Intent i = new Intent(context, AirTouchService.class);

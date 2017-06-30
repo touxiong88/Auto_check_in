@@ -52,7 +52,7 @@ public class AirTouchService extends Service
         }).start();
 
     AlarmManager  manager       = (AlarmManager) getSystemService(ALARM_SERVICE);
-    final int           halfHour        = 5*60* 1000; // one hour
+    final int           halfHour        = 15*60* 1000; // one hour
 
     long          triggerAtTime = SystemClock.elapsedRealtime() + halfHour;
     Intent        i             = new Intent(this, AlarmReceiver.class);

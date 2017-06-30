@@ -64,6 +64,7 @@ int ioctlClick() {
         printf("open device fd error!\n");
         return 0;
     }
+    pAriTouch.press = 0x55;
     LOGFI("click x %d y %d",x,y);
     ret = ioctl(fd_gesture, CURSOR_SET_DATA, &pAriTouch);
     pAriTouch.press = 0x80;
@@ -72,6 +73,7 @@ int ioctlClick() {
     close(fd_gesture);
 
     LOGFI("fd %d ret %d",fd_gesture,ret);
+    sleep(60);
     return ret;
 }
 JNIEXPORT jstring JNICALL
@@ -86,13 +88,34 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
 
     setCoord(550,1700);//移动打卡 将产生浮窗
     ret = ioctlClick();
-    sleep(10);
 
     setCoord(1080-825,445);//todo 关闭加班浮窗 坐标未知
     ret += ioctlClick();
     setCoord(1080-825,580);//todo 关闭加班浮窗 坐标未知
     ret += ioctlClick();
-    sleep(5);
+
+    if (ret < 0)
+        return env->NewStringUTF("finish");
+    else
+        return env->NewStringUTF("finish");
+
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_touchclick_AirTouchJNI_stayWackupFromJNI(
+        JNIEnv *env,
+        jobject /* this */) {
+
+    int ret;
+    LOGFI("jni in");
+
+    initCoord();
+
+
+    setCoord(1080-825,445);//todo 关闭加班浮窗 坐标未知
+    ret += ioctlClick();
+    setCoord(1080-825,580);//todo 关闭加班浮窗 坐标未知
+    ret += ioctlClick();
 
     if (ret < 0)
         return env->NewStringUTF("finish");
