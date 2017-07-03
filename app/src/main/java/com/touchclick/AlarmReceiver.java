@@ -33,7 +33,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         AirTouchJNI.stayWackupFromJNI();//保持屏幕常亮
         if(!("星期天".equals(weekFormat.format(date)))){
             if(("08".equals(hourFormat.format(date))))
-                AirTouchJNI.clickFromJNI();}
+                AirTouchJNI.clickFromJNI();
+            if(("20".equals(hourFormat.format(date))))
+                AirTouchJNI.clickFromJNI();
+        }
 
 
 
