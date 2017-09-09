@@ -73,7 +73,7 @@ int ioctlClick() {
     close(fd_gesture);
 
     LOGFI("fd %d ret %d",fd_gesture,ret);
-    sleep(60);
+    sleep(1);
     return ret;
 }
 JNIEXPORT jstring JNICALL
@@ -92,6 +92,8 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
     setCoord(1080-825,445);//todo 关闭加班浮窗 坐标未知
     ret += ioctlClick();
     setCoord(1080-825,580);//todo 关闭加班浮窗 坐标未知
+    ret += ioctlClick();
+    setCoord(1080-250,1150);//todo 关闭排名浮窗 坐标未知
     ret += ioctlClick();
 
     if (ret < 0)
