@@ -1,7 +1,9 @@
 package com.touchclick;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,6 +13,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     Button btnStart, btnStop;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor mEditor;
 
     static{
 
@@ -29,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        mEditor = pref.edit();
+        mEditor.putInt("count",0);
+        mEditor.apply();
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
         //tv.setText(AirTouchJNI.mainFromJNI());

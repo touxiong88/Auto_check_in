@@ -5,17 +5,21 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AirTouchService extends Service
 {
     private static final String TAG = "AirTouchService";
-        static boolean firsrRun = true;
-        static{
+    private static final String PREFERENCE_PACKAGE = "com.touchclick";
+    Context mContext = null;
+    static{
 
             try {
                 System.loadLibrary("airTouch");
@@ -38,8 +42,13 @@ public class AirTouchService extends Service
         @Override
         public void onCreate() {
             super.onCreate();
-            //getservice().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//
+//            getservice().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//
             Log.d(TAG, "OnCreate");
+            try {
+                mContext = this.createPackageContext(PREFERENCE_PACKAGE, Context.CONTEXT_IGNORE_SECURITY);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
             //AirTouchJNI.clickFromJNI();
         }
         @Override
@@ -51,11 +60,37 @@ public class AirTouchService extends Service
             }
         }).start();
 
-    AlarmManager  manager       = (AlarmManager) getSystemService(ALARM_SERVICE);
-    final int           anHour        = 60*60* 1000; // one hour
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences("count", MODE_PRIVATE);
 
-    long          triggerAtTime = SystemClock.elapsedRealtime() + anHour;
-    Intent        i             = new Intent(this, AlarmReceiver.class);
+            int count = sharedPreferences.getInt("count",0);
+
+
+            long             time       =System.currentTimeMillis();
+    Date             date       =new Date(time);
+    SimpleDateFormat weekFormat =new SimpleDateFormat("EEEE");
+    SimpleDateFormat hourFormat =new SimpleDateFormat("hh");
+    Log.d(TAG, weekFormat.format(date));
+    Log.d(TAG, hourFormat.format(date));
+
+
+    AlarmManager  manager       = (AlarmManager) getSystemService(ALARM_SERVICE);
+    final int           halfHour        = 29*60* 1000; // one hour
+    long          triggerAtTime = SystemClock.elapsedRealtime() + halfHour;
+
+    Intent        i;
+    if(!("星期六".equals(weekFormat.format(date))) ){//星期天
+        {
+            if(("08".equals(hourFormat.format(date)))||("20".equals(hourFormat.format(date))))
+                i = new Intent(this, AlarmReceiver.class);
+            else {
+                i = new Intent(this,StayWackup.class);
+            }
+        }
+    }else {
+        i = new Intent(this,StayWackup.class);
+    }
+
+
     PendingIntent pi            = PendingIntent.getBroadcast(this, 0, i, 0);
     manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
     return super.onStartCommand(intent, flags, startId);
