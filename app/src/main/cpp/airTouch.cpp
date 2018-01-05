@@ -14,6 +14,7 @@
 
 #define CURSOR_SET_DATA  0x5810
 #define CURSOR_GET_DATA  0x5811
+#define CURSOR_SET_KEY  0x5811
 
 typedef unsigned char   u8;
 
@@ -73,7 +74,23 @@ int ioctlClick() {
     close(fd_gesture);
 
     LOGFI("fd %d ret %d",fd_gesture,ret);
-    sleep(1);
+//    sleep(1);
+    return ret;
+}
+
+int ioctlSetKey(int keyValue) {
+    int fd_gesture, ret;
+    fd_gesture = open("/dev/gesture", O_RDWR); /*open device*/ //修改设备名为 gesture
+    if (fd_gesture == -1) {
+        printf("open device fd error!\n");
+        return 0;
+    }
+
+    ret = ioctl(fd_gesture, CURSOR_SET_KEY, &keyValue);
+    close(fd_gesture);
+
+    LOGFI("fd %d ret %d",fd_gesture,ret);
+//    sleep(1);
     return ret;
 }
 JNIEXPORT jstring JNICALL
@@ -95,6 +112,9 @@ Java_com_touchclick_AirTouchJNI_clickFromJNI(
     ret += ioctlClick();
     setCoord(1080-250,1150);//todo 关闭排名浮窗 坐标未知
     ret += ioctlClick();
+    setCoord(1080-70,170);//todo 关闭打卡分享
+    ret += ioctlClick();
+
 
     if (ret < 0)
         return env->NewStringUTF("finish");
